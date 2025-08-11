@@ -108,4 +108,10 @@ with sync_playwright() as p:
     depart_month("December 23 2025", month_one, month_two)
     last_month, last_day, last_year = depart_day("December 23 2025")
     click_day(last_month, last_day, last_year)
+    page.click("button.donebutton")
+    page.click('div.col-sm-12.col-lg-3.d-lg-block.offset-md-2.col-md-8.book-element.booking-element.select-container.select-container-down-md.passenger-booking-element.ng-tns-c84-2.d-sm-none.offset-lg-0')
+    page.click('span#passengers-val')
+    passenger_count = 2
+    page.locator(f"li#ui-list-passengers{passenger_count-1}").click()
+    page.click("button#btn-book-submit")
     page.pause()
