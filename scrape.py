@@ -36,7 +36,7 @@ with sync_playwright() as p:
     #Flight select fields:
     page.click('div.col-sm-12.select_dropdown.trip-type-container.trip-element.d-lg-block.offset-md-2.col-md-8.offset-lg-0.book-element.mb-3.mb-lg-0.select-container.select-container-down-md.ng-tns-c84-2.d-sm-none.col-lg-2.booking-element')
     print("clicked div")
-    page.click("li:has-text('One Way')")
+    page.click("li:has-text('Round Trip')")
     page.click('div.calDispValueCont.icon-Calendar  ')
 
     date_dict = {
@@ -90,21 +90,22 @@ with sync_playwright() as p:
         month_num = date_dict[date_list[0]]
         return month_num, date_list[1], date_list[2]
 
+    def click_day(last_month, last_day, last_year):
+        date_obj = datetime.date(int(last_year), int(last_month), int(last_day))
+        day_number = date_obj.weekday()
+        day_name = date_obj.strftime("%A")
+        page.locator(f"a.dl-state-default[aria-label='{last_day} {month_dict[last_month]} {last_year}, {day_name}']").click()
 
 
     month_one = page.inner_text("span.dl-datepicker-month-0")
     month_two = page.inner_text("span.dl-datepicker-month-1")
     depart_month("November 23 2025", month_one, month_two)
-    print("Done with recursion")
     last_month, last_day, last_year = depart_day("November 23 2025")
-    print("Depart day return", last_month, last_day, last_year)
-    date_obj = datetime.date(int(last_year), int(last_month), int(last_day))
-    print("The dateobj", date_obj)
-    day_number = date_obj.weekday()
-    print(day_number)
-    day_name = date_obj.strftime("%A")
-    print(day_name)
-    print("The month name", month_dict[last_month])
-    page.locator(f"a.dl-state-default[aria-label='{last_day} {month_dict[last_month]} {last_year}, {day_name}']").click()
-    print("Done")
+    click_day(last_month, last_day, last_year)
+    month_one = page.inner_text("span.dl-datepicker-month-0")
+    month_two = page.inner_text("span.dl-datepicker-month-1")
+    print(month_one, month_two)
+    depart_month("December 23 2025", month_one, month_two)
+    last_month, last_day, last_year = depart_day("December 23 2025")
+    click_day(last_month, last_day, last_year)
     page.pause()
