@@ -2,15 +2,14 @@ from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
 import datetime
 from fastapi import FastAPI, HTTPException
-from fastapi.middleware import CORSMiddleWare
 from pydantic import BaseModel, Field
 from typing import Optional, List, Dict
-
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
 app.add_middleware(
-    CORSMiddleWare,
+    CORSMiddleware,
     allow_origins=['http://localhost:3000'],
     allow_credentials=True,
     allow_methods=['*'],
@@ -19,18 +18,19 @@ app.add_middleware(
 
 class SearchReq(BaseModel):
     origin: str = Field(..., min_length=3, max_length=3, description="Where is the orgin of travel")
-    destination: str=Field(...m min_length=3, max_length=3, description="Where is the travel destination")
+    destination: str=Field(..., min_length=3, max_length=3, description="Where is the travel destination")
     type_trip: str=Field(..., min_length=6, max_length=11, description="Is it a round-trip, one-way, or multi-way?")
-    date: str=Field(..., regex=r"^\d{4}-\d{2}-\d{2}$", description="Person's expected departure dates")
-    num_passengder: int=Field(..., gt=0, le=10, description="Number of passengers needed to account for")
+    departure_date: str=Field(..., pattern=r"^\d{4}-\d{2}-\d{2}$", description="Person's expected departure dates")
+    coming_back_date: str=Field(..., pattern=r"^\d{4}-\d{2}-\d{2}$", description="When person is coming back")
+    num_passengers: int=Field(..., gt=0, le=10, description="Number of passengers needed to account for")
 
 class Flight(BaseModel):
     number: str
-    depart_time: str,
-    arrival_time: str,
-    flight_type: str,
-    cabin_type: str,
-    prices: Dict[str, int],
+    depart_time: str
+    arrival_time: str
+    flight_type: str
+    cabin_type: str
+    prices: Dict[str, int]
     duration: str
 
 class SearchRes(BaseModel):
@@ -55,21 +55,21 @@ def scrape_delta(req: SearchReq) -> List[Flight]:
         page.click('div.input-group.active')
         page.wait_for_selector('input#search_input', timeout=5000)
         page.click('input#search_input')
-        page.type('input#search_input', 'ATL', delay=100)
+        page.type('input#search_input', req.origin, delay=100)
         page.click('div.airport-lookup-container.search-dialog')
         page.click('button.search-flyout-close.float-right.d-none.d-lg-block.circle-outline.icon-moreoptionsclose')
         page.click("a#toAirportName")
         page.click('div.input-group.active')
         page.wait_for_selector('input#search_input', timeout=5000)
         page.click('input#search_input')
-        page.type('input#search_input', 'MIA', delay=100)
+        page.type('input#search_input', req.destination, delay=100)
         page.click('div.airport-lookup-container.search-dialog')
         page.click('button.search-flyout-close.float-right.d-none.d-lg-block.circle-outline.icon-moreoptionsclose')
 
         #Flight select fields:
         page.click('div.col-sm-12.select_dropdown.trip-type-container.trip-element.d-lg-block.offset-md-2.col-md-8.offset-lg-0.book-element.mb-3.mb-lg-0.select-container.select-container-down-md.ng-tns-c84-2.d-sm-none.col-lg-2.booking-element')
         print("clicked div")
-        page.click("li:has-text('Round Trip')")
+        page.click(f"li:has-text({req.type_trip})")
         page.click('div.calDispValueCont.icon-Calendar  ')
 
         date_dict = {
@@ -133,19 +133,18 @@ def scrape_delta(req: SearchReq) -> List[Flight]:
         month_one = page.inner_text("span.dl-datepicker-month-0")
         month_two = page.inner_text("span.dl-datepicker-month-1")
         depart_month("November 23 2025", month_one, month_two)
-        last_month, last_day, last_year = depart_day("November 23 2025")
+        last_month, last_day, last_year = depart_day(req.origin)
         click_day(last_month, last_day, last_year)
         month_one = page.inner_text("span.dl-datepicker-month-0")
         month_two = page.inner_text("span.dl-datepicker-month-1")
         print(month_one, month_two)
-        depart_month("December 23 2025", month_one, month_two)
-        last_month, last_day, last_year = depart_day("December 23 2025")
+        depart_month(req.coming_back_date, month_one, month_two)
+        last_month, last_day, last_year = depart_day(req.coming_back_date)
         click_day(last_month, last_day, last_year)
         page.click("button.donebutton")
         page.click('div.col-sm-12.col-lg-3.d-lg-block.offset-md-2.col-md-8.book-element.booking-element.select-container.select-container-down-md.passenger-booking-element.ng-tns-c84-2.d-sm-none.offset-lg-0')
         page.click('span#passengers-val')
-        passenger_count = 2
-        page.locator(f"li#ui-list-passengers{passenger_count-1}").click()
+        page.locator(f"li#ui-list-passengers{req.num_passengers-1}").click()
         page.click("button#btn-book-submit")
 
 
@@ -153,7 +152,7 @@ def scrape_delta(req: SearchReq) -> List[Flight]:
 
         #Search Results Page
 
-        #Main Cabin Information:
+        #Flight Specific Information:
         page.wait_for_selector(f"#flight-results-grid-0")
         options = page.locator('div.search-results__grid.container-lg-up.container.container-lg-down')
         options = options.locator("div.flight-results-grid.mach-flight-results-grid.ng-star-inserted")
@@ -177,6 +176,12 @@ def scrape_delta(req: SearchReq) -> List[Flight]:
             prices = price_info(i)
             flight_dict[i] = prices
         print(flight_dict)
+
+
+
         page.pause()
 
 
+@app.post('/scrape-delta')
+
+#I have to make a  bit of the frontend so that I can send data back and forth
