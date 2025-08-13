@@ -1,7 +1,10 @@
 import "../App.css"
 import delta from "../assets/delta.png"
-
 export function DeltaPage(){
+    function changeWindow(){
+        return window.location.href="/findflight"
+    }
+
     return(
         <>
             <div id="main-background">
@@ -14,7 +17,7 @@ export function DeltaPage(){
                     <li>My Tickets</li>
                     </div>
                     <div id='div3'>
-                    <li>Find Flight</li>
+                    <li onClick={ () => changeWindow()}>Find Flight</li>
                     </div>
                 </div>
                 </nav>

@@ -3,7 +3,8 @@ import delta from "./assets/delta.png"
 import plane1 from "./assets/plane1.jpg"
 import plane2 from "./assets/plane2.jpg"
 import {useState, useEffect} from "react"
-import { DeltaPage } from "./components/deltaHomePage.jsx" 
+import { DeltaPage } from "./homepage-components/deltaHomePage.jsx" 
+import { FindFlight } from "./navbar-components/findflight.jsx"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 
 function App() {
@@ -12,6 +13,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/home" element={<DeltaPage/>} />
+          <Route path='/findflight' element={<FindFlight/>} />
         </Routes>
       </BrowserRouter>
     </>
