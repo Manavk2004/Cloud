@@ -181,7 +181,8 @@ def scrape_delta(req: SearchReq) -> List[Flight]:
 
         page.pause()
 
+@app.get("/registeredinfo")
 
-@app.post('/scrape-delta')
+@app.post('/scrape-delta', response_model=SearchReq)
 
 #I have to make a  bit of the frontend so that I can send data back and forth
