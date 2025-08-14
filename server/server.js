@@ -1,8 +1,9 @@
 import express from "express"
 import cors from "cors"
 import dotenv from "dotenv"
-import { homeRouter } from "./routes/homeRouter.js"
+import { registeredInfoRouter } from "./routes/registeredInfoRouter.js"
 
+const PORT = 3001
 
 const app = express()
 app.use(cors({
@@ -13,4 +14,8 @@ app.use(cors({
 app.use(express.json())
 
 
-app.use("/home", homeRouter)
+app.use('/registeredinfo', registeredInfoRouter)
+
+app.listen(PORT, () =>{
+    console.log(`Listening on port ${PORT}`)
+})

@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
 import datetime
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from pydantic import BaseModel, Field
 from typing import Optional, List, Dict
 from fastapi.middleware.cors import CORSMiddleware
@@ -10,7 +10,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=['http://localhost:3000'],
+    allow_origins=['http://localhost:5173'],
     allow_credentials=True,
     allow_methods=['*'],
     allow_headers=['*']
@@ -181,7 +181,16 @@ def scrape_delta(req: SearchReq) -> List[Flight]:
 
         page.pause()
 
-@app.get("/registeredinfo")
+@app.post('/registeredinfo')
+async def retrieveInfo(request: Request):
+    body = await request.json()
+    origin = body.origin
+    destination = body.destination
+    tripType = body.tripType
+    departDay = body.departureDate
+    lastDay = body.lastDay
+    numPassengers = body.numPassengers
+    return {"Origin":origin, "Destination":destination, "TripType":tripType, "DepartDay":departDay, "LastDay":lastDay, "Number of Passengers":numPassengers}
 
 @app.post('/scrape-delta', response_model=SearchReq)
 

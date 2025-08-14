@@ -14,9 +14,23 @@ export function FindFlight(){
 
 
     function sendInfo(){
-        fetch(`registeredinfo?origin=${origin}&destination=${destination}&triptype=${tripType}&departuredate=${departureDate}&arrivadate=${arrivalDate}&numpassengers=${numPassengers}`)
-            .then(res => res.json)
-            .then(data => console.log(date))
+        fetch('http://localhost:3001/registeredinfo', {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                Origin: origin,
+                Destination: destination,
+                TripType: tripType,
+                DepartDate: departureDate,
+                LasDay: lastDay,
+                NumberPassengers: numPassengers
+            })
+        })
+            .then(res => res.json())
+            .then(data => console.log(data))
+            .catch(err => console.log(err))
         
     }
 
