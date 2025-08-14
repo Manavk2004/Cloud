@@ -13,19 +13,44 @@ export function FindFlight(){
     const [ numPassengers, setNumPassengers] = useState(null)
 
 
+    const monthDict = {
+        1: "January",
+        2: "February",
+        3: "March",
+        4: "April",
+        5: "May",
+        6: "June",
+        7: "July",
+        8: "August",
+        9: "September",
+        10: "October",
+        11: "November",
+        12: "December"
+    }
+
+
     function sendInfo(){
+        const date = departureDate.split("-").map(num => parseInt(num, 10))
+        const day = date[2]
+        const month = monthDict[date[1]]
+        const year = date[0]
+        const arrDate = lastDay.split("-").map(num => parseInt(num, 10))
+        const arrday = arrDate[2]
+        const arrmonth = monthDict[arrDate[1]]
+        const arryear = arrDate[0]
+        console.log("ArrDate", arrDate)
         fetch('http://localhost:3001/registeredinfo', {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                Origin: origin,
-                Destination: destination,
-                TripType: tripType,
-                DepartDate: departureDate,
-                LasDay: lastDay,
-                NumberPassengers: numPassengers
+                origin: origin.toUpperCase(),
+                destination: destination.toUpperCase(),
+                trip_type: tripType,
+                departure_date: [month, day, year],
+                coming_back_date: [arrmonth, arrday, arryear],
+                num_passengers: numPassengers
             })
         })
             .then(res => res.json())
@@ -47,7 +72,15 @@ export function FindFlight(){
     }, [tripType])
 
     useEffect(() =>{
-        console.log(departureDate)
+        if (departureDate !== null){
+            const date = departureDate.split("-").map(num => parseInt(num, 10))
+            const day = date[2]
+            const month = monthDict[date[1]]
+            console.log("The month", month)
+            const year = date[0]
+            console.log("This is the date", date)
+        }
+
     }, [departureDate])
 
     useEffect(() =>{
@@ -63,11 +96,11 @@ export function FindFlight(){
             <div id="main-div">
                 <div id="container1">
                     <h1>Where are you coming from</h1>
-                    <input onChange={(e) => setOrigin(e.target.value)} type='text' placeholder="ATL" maxlength={3}></input>
+                    <input onChange={(e) => setOrigin(e.target.value)} type='text' placeholder="ATL" maxLength={3}></input>
                 </div>
                 <div id="container2">
                     <h1>Where are you heading?</h1>
-                    <input onChange={(e) => setDestination(e.target.value)} type='text' placeholder="MIA" maxlength={3}></input>
+                    <input onChange={(e) => setDestination(e.target.value)} type='text' placeholder="MIA" maxLength={3}></input>
                 </div>
                 <div id="container3">
                     <h1>Type of Trip</h1>
@@ -90,8 +123,8 @@ export function FindFlight(){
                     <h1>Number of Passengers</h1>
                     <select onChange={(e) => setNumPassengers(e.target.value)}>
                         <option className="options" value="1"> 1 Passenger </option>
-                        <option className="options" value="2"> 3 Passenger </option>
-                        <option className="options" value="3"> 2 Passenger </option>
+                        <option className="options" value="2"> 2 Passenger </option>
+                        <option className="options" value="3"> 3 Passenger </option>
                         <option className="options" value="4"> 4 Passenger </option>
                         <option className="options" value="5"> 5 Passenger </option>
                         <option className="options" value="6"> 6 Passenger </option>
