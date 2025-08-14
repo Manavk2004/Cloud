@@ -127,6 +127,10 @@ def searchFlights():
             day_name = date_obj.strftime("%A")
             page.locator(f"a.dl-state-default[aria-label='{last_day} {last_month} {last_year}, {day_name}']").click()
 
+        def clickPassengers():
+            passenger_index = int(content['num_passengers']) - 1
+            page.click(f"li#ui-list-passengers{passenger_index}")
+
 
         month_one = page.inner_text("span.dl-datepicker-month-0")
         month_two = page.inner_text("span.dl-datepicker-month-1")
@@ -140,9 +144,12 @@ def searchFlights():
         last_month, last_day, last_year = content['coming_back_date']
         click_day(last_month, last_day, last_year)
         page.click("button.donebutton")
-        page.click('div.col-sm-12.col-lg-3.d-lg-block.offset-md-2.col-md-8.book-element.booking-element.select-container.select-container-down-md.passenger-booking-element.ng-tns-c84-2.d-sm-none.offset-lg-0')
+        page.pause()  # Let's see what the page looks like here
+        page.wait_for_selector('span#passengers-val')
         page.click('span#passengers-val')
-        page.locator(f"li#ui-list-passengers{content['num_passengers']-1}").click()
+        page.click(f"li#ui-list-passengers{str(int(content['num_passengers'])-1)}")
+        page.wait_for_selector('li#ui-list-passengers0', state='visible')  # Wait for dropdown to open
+        clickPassengers()
         page.click("button#btn-book-submit")
 
 
