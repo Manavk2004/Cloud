@@ -144,7 +144,6 @@ def searchFlights():
         last_month, last_day, last_year = content['coming_back_date']
         click_day(last_month, last_day, last_year)
         page.click("button.donebutton")
-        page.pause()  # Let's see what the page looks like here
         page.wait_for_selector('span#passengers-val')
         page.click('span#passengers-val')
         page.click(f"li#ui-list-passengers{str(int(content['num_passengers'])-1)}")
