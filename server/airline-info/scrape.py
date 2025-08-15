@@ -42,6 +42,10 @@ flight_dict = {
 
 }
 
+time_dict = {
+
+}
+
 
 
 def searchFlights():
@@ -166,8 +170,11 @@ def searchFlights():
         options = options.all_inner_texts()
         # print(len(options))  # Remove this debug print
         def price_info(index):
-            flight_grid_0 = page.locator(f"div#flight-results-grid-{index}")
-            prices = flight_grid_0.locator('span.mach-revenue-price__whole.ng-star-inserted')
+            flight_grid = page.locator(f"div#flight-results-grid-{index}")
+            time_container = flight_grid.locator('.flight-schedule__operation-time')  # Added dot for class
+            both_times = time_container.all_inner_texts()
+            time_dict[index] = both_times
+            prices = flight_grid.locator('span.mach-revenue-price__whole.ng-star-inserted')
             all_prices = prices.all_inner_texts()
             ordered_prices = []
             for i in all_prices:
@@ -178,9 +185,14 @@ def searchFlights():
         for i in range(len(options)):
             prices = price_info(i)
             flight_dict[i] = prices
+
+        
         
         # Only print the final JSON result
-        print(json.dumps(flight_dict))  # This sends clean JSON back to Node.js
+        print({
+            'flight-info': json.dumps(flight_dict),
+            'time-info': json.dumps(time_dict)
+        })  # This sends clean JSON back to Node.js
         page.pause()
         return flight_dict
     
