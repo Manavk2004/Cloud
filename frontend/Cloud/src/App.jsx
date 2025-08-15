@@ -11,6 +11,12 @@ function App() {
 
   const [ currentPage, setCurrentPage ] = useState(0)
 
+  const variants = {
+    initial: { opacity: 0, y: 20, filter:'blur(6px)'},
+    animate: { opacity: 1, y: 0, filter: 'blur(0px)'},
+    exit: { opaity: 0, y: -20, filter: "blur(6px)"}
+  }
+
 
   function setPage(){
     if(currentPage === 3){
@@ -20,37 +26,6 @@ function App() {
     }
   }
 
-  function currentHomePage(){
-    if(currentPage === 0){
-      return(
-        <>
-          <BrowserRouter>
-            <Routes>
-              <Route path='/home' element={<DeltaPage/>} />
-            </Routes>
-          </BrowserRouter>
-        </>
-      )
-    }else if(currentPage === 1){
-      return(
-        <>
-          <BrowserRouter>
-            <Routes>
-              <Route path='/home' element={<UnitedPage/>} />
-            </Routes>
-          </BrowserRouter>
-        </>
-      )
-    }else if(currentPage === 2){
-      return(
-        <BrowserRouter>
-          <Routes>
-            <Route path='/home' element={<SouthWestPage/>} />
-          </Routes>
-        </BrowserRouter>
-      )
-    }
-  }
   useEffect(() =>{
     setInterval(() => setPage(), 3000)
   }, [])
@@ -67,7 +42,21 @@ function App() {
   
   return(
     <>
-     {currentHomePage()}
+      <AnimatePresence mode='wait'>
+        <motion.div
+          key={currentPage}
+          variants={variants}
+          initial='initail'
+          animate='animate'
+          exit="exit"
+          transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1]}} 
+          style={{ height: "100% "}}
+        >
+          {currentPage === 0 && <DeltaPage />}
+          {currentPage === 1 && <SouthWestPage />}
+          {currentPage === 2 && <UnitedPage />}
+        </motion.div>
+      </AnimatePresence>
     </>
   )
 }
