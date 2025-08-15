@@ -11,6 +11,7 @@ export function FindFlight(){
     const [ departureDate, setDepartureDate ] = useState(null)
     const [ lastDay, setLastDay ] = useState(null)
     const [ numPassengers, setNumPassengers] = useState(null)
+    const [ deltaPrices, setDeltaPrices ] = useState(null)
 
 
     const monthDict = {
@@ -54,7 +55,7 @@ export function FindFlight(){
             })
         })
             .then(res => res.json())
-            .then(data => console.log(data))
+            .then(data => setDeltaPrices(data) )
             .catch(err => console.log(err))
         
     }
@@ -90,6 +91,10 @@ export function FindFlight(){
     useEffect(() =>{
         console.log(numPassengers)
     }, [numPassengers])
+
+    useEffect(() =>{
+        console.log(deltaPrices)
+    }, [deltaPrices])
 
     return(
         <>

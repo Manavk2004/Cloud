@@ -38,16 +38,21 @@ class SearchRes(BaseModel):
 
 
 
+flight_dict = {
+
+}
+
+
+
 def searchFlights():
     content = json.load(sys.stdin)
-    print(content)
+    # print(content)  # Remove this debug print
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=False, slow_mo=50)
         page = browser.new_page()
         page.goto('https://www.delta.com/')
         try:
             page.get_by_role('button', name='I understand').click(timeout=3000)
-            print("Clicked I understad cookie")
         except:
             pass
         if page.is_visible('div.ancillary-headband'):
@@ -71,7 +76,6 @@ def searchFlights():
 
         #Flight select fields:
         page.click('div.col-sm-12.select_dropdown.trip-type-container.trip-element.d-lg-block.offset-md-2.col-md-8.offset-lg-0.book-element.mb-3.mb-lg-0.select-container.select-container-down-md.ng-tns-c84-2.d-sm-none.col-lg-2.booking-element')
-        print("clicked div")
         page.click(f"li:has-text('{content['trip_type']}')")
         page.click('div.calDispValueCont.icon-Calendar  ')
 
@@ -105,9 +109,6 @@ def searchFlights():
         }
 
         def depart_month(user_date, current_month_one, current_month_two):
-            print("The userdate", user_date)
-            print("The current month one", current_month_one)
-            print("The current month two", current_month_two)
             month = user_date[0]
             number = date_dict[month]
             month_one = date_dict[current_month_one]
@@ -122,7 +123,6 @@ def searchFlights():
             
 
         def click_day(last_month, last_day, last_year):
-            print("In click day")
             date_obj = datetime.date(int(last_year), date_dict[last_month], int(last_day))
             day_name = date_obj.strftime("%A")
             page.locator(f"a.dl-state-default[aria-label='{last_day} {last_month} {last_year}, {day_name}']").click()
@@ -140,7 +140,6 @@ def searchFlights():
         click_day(last_month, last_day, last_year)
         month_one = page.inner_text("span.dl-datepicker-month-0")
         month_two = page.inner_text("span.dl-datepicker-month-1")
-        print(month_one, month_two)
         depart_month(content['coming_back_date'], month_one, month_two)
         last_month, last_day, last_year = content['coming_back_date']
         click_day(last_month, last_day, last_year)
@@ -165,7 +164,7 @@ def searchFlights():
         options = page.locator('div.search-results__grid.container-lg-up.container.container-lg-down')
         options = options.locator("div.flight-results-grid.mach-flight-results-grid.ng-star-inserted")
         options = options.all_inner_texts()
-        print(len(options))
+        # print(len(options))  # Remove this debug print
         def price_info(index):
             flight_grid_0 = page.locator(f"div#flight-results-grid-{index}")
             prices = flight_grid_0.locator('span.mach-revenue-price__whole.ng-star-inserted')
@@ -176,31 +175,22 @@ def searchFlights():
                     ordered_prices.append(i)
             return ordered_prices
         
-        flight_dict = {
-
-        }
-        
         for i in range(len(options)):
             prices = price_info(i)
             flight_dict[i] = prices
-        print(flight_dict)
-
-
-
+        
+        # Only print the final JSON result
+        print(json.dumps(flight_dict))  # This sends clean JSON back to Node.js
         page.pause()
+        return flight_dict
+    
 
 
 
-@app.post('/registeredinfo')
-async def retrieveInfo(request: Request):
-    body = await request.json()
-    origin = body.origin
-    destination = body.destination
-    tripType = body.tripType
-    departDay = body.departureDate
-    lastDay = body.lastDay
-    numPassengers = body.numPassengers
-    return {"Origin":origin, "Destination":destination, "TripType":tripType, "DepartDay":departDay, "LastDay":lastDay, "Number of Passengers":numPassengers}
+
+
+
+
 
 
 #I have to make a  bit of the frontend so that I can send data back and forth
