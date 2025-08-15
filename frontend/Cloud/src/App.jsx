@@ -10,6 +10,7 @@ import { AnimatePresence, motion } from "framer-motion"
 function App() {
 
   const [ currentPage, setCurrentPage ] = useState(0)
+  const [ isAnimated, setIsAnimated ] = useState(true)
 
   const variants = {
     initial: { opacity: 0, y: 20, filter:'blur(6px)'},
@@ -19,45 +20,71 @@ function App() {
 
 
   function setPage(){
-    if(currentPage === 3){
-      setCurrentPage(() => 0)
-    }else{
-      setCurrentPage((prev) => prev + 1)
+    if(isAnimated){
+      if(currentPage === 3){
+        setCurrentPage(() => 0)
+      }else{
+        setCurrentPage((prev) => prev + 1)
+      }
     }
   }
 
   useEffect(() =>{
-    setInterval(() => setPage(), 3000)
+    if (isAnimated){
+      setInterval(() => setPage(), 3000)
+    }
   }, [])
 
   useEffect(() =>{
-    if(currentPage === 3){
+    if(currentPage === 3 && isAnimated){
+
       setCurrentPage(0)
     }
-    console.log(currentPage)
   }, [currentPage])
 
+  useEffect(() =>{
+    console.log(isAnimated)
+  }, [isAnimated])
 
+  useEffect(() =>{
+    if(window.location.href === "http://localhost:5173/findflight"){
+      setIsAnimated(false)
+    }
+  }, [window.location.href])
 
   
   return(
-    <>
-      <AnimatePresence mode='wait'>
-        <motion.div
-          key={currentPage}
-          variants={variants}
-          initial='initail'
-          animate='animate'
-          exit="exit"
-          transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1]}} 
-          style={{ height: "100% "}}
-        >
-          {currentPage === 0 && <DeltaPage />}
-          {currentPage === 1 && <SouthWestPage />}
-          {currentPage === 2 && <UnitedPage />}
-        </motion.div>
-      </AnimatePresence>
-    </>
+      <BrowserRouter>
+        {isAnimated ? (
+          <>
+            <AnimatePresence mode='wait'>
+              <motion.div
+                key={currentPage}
+                variants={variants}
+                initial='initial'
+                animate='animate'
+                exit="exit"
+                transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1]}} 
+                style={{ height: "100% "}}
+              >
+                <BrowserRouter>
+                  <Routes location={location} key={location.pathname}>
+                    <Route path="/home" element={
+                      currentPage === 0 ? <DeltaPage props={isAnimated}/> : 
+                      currentPage === 1 ? <UnitedPage props={isAnimated}/> :
+                      <SouthWestPage props={isAnimated}/>
+                    } />
+                  </Routes>
+                </BrowserRouter>
+              </motion.div>
+            </AnimatePresence>
+          </>
+        ) : (
+          <Routes>
+            <Route path="/findflight" element={<FindFlight/>}/>
+          </Routes>
+        )}
+    </BrowserRouter>
   )
 }
 

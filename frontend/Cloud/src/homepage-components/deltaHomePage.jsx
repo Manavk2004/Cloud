@@ -1,7 +1,7 @@
 import "./homepages.css"
 import delta from "../assets/delta.png"
 export function DeltaPage(){
-    function changeWindow(){
+    function changeWindow(props){
         return window.location.href="/findflight"
     }
 

@@ -3,7 +3,7 @@ import unitedPlane from "../assets/unitedPlane.jpg"
 import unitedLogo from "../assets/unitedLogo.png"
 import "./homepages.css"
 
-export function UnitedPage(){
+export function UnitedPage(props){
     function changeWindow(){
         return window.location.href="/findflight"
     }

@@ -135,6 +135,7 @@ def searchFlights():
         month_one = page.inner_text("span.dl-datepicker-month-0")
         month_two = page.inner_text("span.dl-datepicker-month-1")
         depart_month(content['departure_date'], month_one, month_two)
+        # page.pause()
         last_month, last_day, last_year = content['departure_date']
         click_day(last_month, last_day, last_year)
         month_one = page.inner_text("span.dl-datepicker-month-0")
@@ -143,12 +144,15 @@ def searchFlights():
         depart_month(content['coming_back_date'], month_one, month_two)
         last_month, last_day, last_year = content['coming_back_date']
         click_day(last_month, last_day, last_year)
+        # page.pause()
         page.click("button.donebutton")
         page.wait_for_selector('span#passengers-val')
         page.click('span#passengers-val')
+        # page.pause()
         page.click(f"li#ui-list-passengers{str(int(content['num_passengers'])-1)}")
         page.wait_for_selector('li#ui-list-passengers0', state='visible')  # Wait for dropdown to open
         clickPassengers()
+        # page.pause()
         page.click("button#btn-book-submit")
 
 

@@ -1,7 +1,8 @@
 import southwestlogo from "../assets/southwestlogo.png"
 
-export function SouthWestPage(){
+export function SouthWestPage(props){
     function changeWindow(){
+        props.isAnimated=false
         return window.location.href="/findflight"
     }
 
