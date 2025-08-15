@@ -2,8 +2,10 @@ import "./homepage-components/homepages.css"
 import {useState, useEffect} from "react"
 import { DeltaPage } from "./homepage-components/deltaHomePage.jsx" 
 import { UnitedPage } from "./homepage-components/unitedHomePage.jsx"
+import { SouthWestPage } from "./homepage-components/southWestPage.jsx"
 import { FindFlight } from "./navbar-components/findflight.jsx"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { AnimatePresence, motion } from "framer-motion"
 
 function App() {
 
@@ -11,7 +13,7 @@ function App() {
 
 
   function setPage(){
-    if(currentPage === 2){
+    if(currentPage === 3){
       setCurrentPage(() => 0)
     }else{
       setCurrentPage((prev) => prev + 1)
@@ -39,18 +41,33 @@ function App() {
           </BrowserRouter>
         </>
       )
+    }else if(currentPage === 2){
+      return(
+        <BrowserRouter>
+          <Routes>
+            <Route path='/home' element={<SouthWestPage/>} />
+          </Routes>
+        </BrowserRouter>
+      )
     }
   }
   useEffect(() =>{
     setInterval(() => setPage(), 3000)
   }, [])
+
+  useEffect(() =>{
+    if(currentPage === 3){
+      setCurrentPage(0)
+    }
+    console.log(currentPage)
+  }, [currentPage])
+
+
+
+  
   return(
     <>
-      <BrowserRouter>
-        <Routes>
-          <Route path='/home' element={<UnitedPage/>} />
-        </Routes>
-      </BrowserRouter>
+     {currentHomePage()}
     </>
   )
 }
