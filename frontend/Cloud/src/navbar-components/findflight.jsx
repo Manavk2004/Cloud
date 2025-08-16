@@ -98,6 +98,13 @@ export function FindFlight(){
         console.log(deltaPrices)
     }, [deltaPrices])
 
+
+
+
+    function changePage(){
+        setPage((prev) => (prev) + 1)
+    }
+
     return(
         <>
             <div id="main-div">
@@ -114,10 +121,10 @@ export function FindFlight(){
                     </div>
                 </div>
                 </nav>
-                <div id="overarching-container">
+                <div id={page===0 ? "overarching-container1" : page === 1 ? "overarching-container2" : "overarching-container3"} >
                     {page === 0 ? 
                         <>
-                            <div class="info-arching-container">
+                            <div class="info-arching-container1">
                                 <div id="container1">
                                     <h1>From</h1>
                                     <h3>What is your origin?</h3>
@@ -133,19 +140,24 @@ export function FindFlight(){
                                 </div>
                             </div>
                             <div class='button-container'>
-                                <button class="next-button">Next</button>
+                                <button onClick={changePage} class="next-button">Next</button>
                             </div>
 
                         </>
                     :  page === 1 ?
-                        <div id="container3">
-                            <h1>Type of Trip</h1>
-                            <select onChange={(e) => setTripType(e.target.value)}>
-                                <option value="">--Select and Option--</option>
-                                <option value="One Way">One Way</option>
-                                <option value="Round Trip">Round Trip</option>
-                                <option value="Multi Way">Multi Way</option>
-                            </select>
+                        <div class='info-arching-container2'>
+                            <div id="container3">
+                                <h1>Type of Trip</h1>
+                                <select id="typetrip-select" onChange={(e) => setTripType(e.target.value)}>
+                                    <option value="">--Select Trip Type--</option>
+                                    <option value="One Way">One Way</option>
+                                    <option value="Round Trip">Round Trip</option>
+                                    <option value="Multi Way">Multi Way</option>
+                                </select>
+                            </div>
+                            <div class='button-container'>
+                                <button onClick={changePage} class="next-button">Next</button>
+                            </div>
                         </div>
                     : page === 2 ?
                         <>
@@ -154,7 +166,7 @@ export function FindFlight(){
                                 <input onChange={(e) => setDepartureDate(e.target.value)} type='date'></input>
                             </div>
                             <div id='container6'>
-                                <h1>Arrival Date</h1>
+                                <h1>Return Date</h1>
                                 <input type='date' onChange={(e) => setLastDay(e.target.value)}></input>
                             </div>
                         </>
