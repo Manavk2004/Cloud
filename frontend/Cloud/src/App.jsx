@@ -67,15 +67,13 @@ function App() {
                 transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1]}} 
                 style={{ height: "100% "}}
               >
-                <BrowserRouter>
-                  <Routes location={location} key={location.pathname}>
-                    <Route path="/home" element={
-                      currentPage === 0 ? <DeltaPage props={isAnimated}/> : 
-                      currentPage === 1 ? <UnitedPage props={isAnimated}/> :
-                      <SouthWestPage props={isAnimated}/>
-                    } />
-                  </Routes>
-                </BrowserRouter>
+                <Routes>
+                  <Route path="/home" element={
+                    currentPage === 0 ? <DeltaPage props={isAnimated}/> : 
+                    currentPage === 1 ? <UnitedPage props={isAnimated}/> :
+                    <SouthWestPage props={isAnimated}/>
+                  } />
+                </Routes>
               </motion.div>
             </AnimatePresence>
           </>

@@ -39,6 +39,7 @@ body{
   grid-column: 1 / 6;
   z-index: 13000;
   backdrop-filter: blur(20px);
+  margin-right: 12px;
 }
 
 #navbar-div{

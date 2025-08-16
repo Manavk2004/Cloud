@@ -1,11 +1,13 @@
 import "./findflights.css"
 import DatePicker from "react-datepicker"
 import { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 import arrow from "../assets/arrow.png"
 import "react-datepicker/dist/react-datepicker.css"
 
 export function FindFlight(){
 
+    const navigate = useNavigate()
     const [ startDate, setStartDate ] = useState(null)
     const [ origin, setOrigin ] = useState(null)
     const [ destination, setDestination ] = useState(null)
@@ -15,34 +17,55 @@ export function FindFlight(){
     const [ numPassengers, setNumPassengers] = useState(null)
     const [ deltaPrices, setDeltaPrices ] = useState(null)
     const [ page, setPage ] = useState(0)
-    const [ selectedDate, setSelectedDate ] = useState(null)
 
+
+
+    // const monthDict = {
+    //     1: "January",
+    //     2: "February",
+    //     3: "March",
+    //     4: "April",
+    //     5: "May",
+    //     6: "June",
+    //     7: "July",
+    //     8: "August",
+    //     9: "September",
+    //     10: "October",
+    //     11: "November",
+    //     12: "December"
+    // }
 
     const monthDict = {
-        1: "January",
-        2: "February",
-        3: "March",
-        4: "April",
-        5: "May",
-        6: "June",
-        7: "July",
-        8: "August",
-        9: "September",
-        10: "October",
-        11: "November",
-        12: "December"
+        "Jan": "January",
+        "Feb": "February",
+        "Mar": "March",
+        "Apr": "April",
+        "May": "May",
+        "Jun": "June",
+        "Jul": "July",
+        "Aug": "August",
+        "Sep": "September",
+        "Oct": "October",
+        "Nov": "November",
+        "Dec": "December"
     }
 
 
     function sendInfo(){
-        const date = departureDate.split("-").map(num => parseInt(num, 10))
+        console.log(typeof departureDate)
+        console.log(typeof lastDay)
+        let departureDateString = departureDate.toString()
+        console.log(typeof departureDateString)
+        const date = departureDateString.split(" ")
+        console.log(date)
         const day = date[2]
         const month = monthDict[date[1]]
-        const year = date[0]
-        const arrDate = lastDay.split("-").map(num => parseInt(num, 10))
+        const year = date[3]
+        let returnDateString = lastDay.toString()
+        const arrDate = returnDateString.split(" ")
         const arrday = arrDate[2]
         const arrmonth = monthDict[arrDate[1]]
-        const arryear = arrDate[0]
+        const arryear = arrDate[3]
         console.log("ArrDate", arrDate)
         fetch('http://localhost:3001/registeredinfo', {
             method: "POST",
@@ -76,14 +99,30 @@ export function FindFlight(){
         console.log(tripType)
     }, [tripType])
 
+    
+    useEffect(() =>{
+        console.log(lastDay)
+    }, [lastDay])
+    
+    useEffect(() =>{
+        console.log(numPassengers)
+    }, [numPassengers])
+    
+    useEffect(() =>{
+        console.log(deltaPrices)
+    }, [deltaPrices])
+    
+    useEffect(() =>{
+        console.log(departureDate)
+    }, [departureDate])
+    
     useEffect(() =>{
         if (departureDate !== null){
-            const date = departureDate.split("-").map(num => parseInt(num, 10))
+            const toDateString = departureDate.toDateString()
+            const date = toDateString.split(" ")
+            const month = date[1]
             const day = date[2]
-            const month = monthDict[date[1]]
-            console.log("The month", month)
-            const year = date[0]
-            console.log("This is the date", date)
+            const year = date[3]
         }
 
     }, [departureDate])
@@ -92,23 +131,21 @@ export function FindFlight(){
         console.log(lastDay)
     }, [lastDay])
 
-    useEffect(() =>{
-        console.log(numPassengers)
-    }, [numPassengers])
-
-    useEffect(() =>{
-        console.log(deltaPrices)
-    }, [deltaPrices])
-
-    
-
 
     function changePage(){
         setPage((prev) => (prev) + 1)
     }
 
-    const handleDateChange = (date) => {
-        setSelectedDate(date)
+    const handleDepartureDate = (date) => {
+        setDepartureDate(date)
+    }
+
+    const handleReturndate = (date) => {
+        setLastDay(date)
+    }
+
+    function changeWindow(){
+        navigate("/findflight")
     }
 
     return(
@@ -123,7 +160,7 @@ export function FindFlight(){
                     <li>My Tickets</li>
                     </div>
                     <div id='div3-delta'>
-                    <li onClick={ () => changeWindow()}>Find Flight</li>
+                    <li onClick={() => changeWindow()}>Find Flight</li>
                     </div>
                 </div>
                 </nav>
@@ -172,8 +209,8 @@ export function FindFlight(){
                                     <div id='container4'>
                                         <h1 class="dateslabel">Departure Date</h1>
                                         <DatePicker
-                                            selected={selectedDate}
-                                            onChange={handleDateChange}
+                                            selected={departureDate}
+                                            onChange={handleDepartureDate}
                                             dateFormat="MM/dd/yyyy"
                                             shouldCloseOnSelect={false}
                                         />
@@ -181,8 +218,8 @@ export function FindFlight(){
                                     <div id='container6'>
                                         <h1 class='dateslabel'>Return Date</h1>
                                         <DatePicker
-                                            selected={selectedDate}
-                                            onChange={handleDateChange}
+                                            selected={lastDay}
+                                            onChange={handleReturndate}
                                             dateFormat="MM/dd/yyyy"
                                             shouldCloseOnSelect={false}
                                         />
