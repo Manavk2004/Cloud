@@ -189,10 +189,11 @@ def searchFlights():
         
         
         # Only print the final JSON result
-        print({
-            'flight-info': json.dumps(flight_dict),
-            'time-info': json.dumps(time_dict)
-        })  # This sends clean JSON back to Node.js
+        combined_data = {
+            'flight-info': flight_dict,
+            'time-info': time_dict
+        }
+        print(json.dumps(combined_data))  # This sends clean JSON back to Node.js
         page.pause()
         return flight_dict
     
