@@ -189,28 +189,31 @@ export function FindFlight(){
                                     </div>
                                 </div>
                                 <div>
-                                    <button onClick={changePage} class="next-button">Next</button>
+                                    <button onClick={changePage} className="next-button">Next</button>
                                 </div>
                             </div>
                         </>
                     : 
                         <>
-                            <div id="container5">
-                                <h1>Number of Passengers</h1>
-                                <select onChange={(e) => setNumPassengers(e.target.value)}>
-                                    <option className="options" value="1"> 1 Passenger </option>
-                                    <option className="options" value="2"> 2 Passenger </option>
-                                    <option className="options" value="3"> 3 Passenger </option>
-                                    <option className="options" value="4"> 4 Passenger </option>
-                                    <option className="options" value="5"> 5 Passenger </option>
-                                    <option className="options" value="6"> 6 Passenger </option>
-                                    <option className="options" value="7"> 7 Passenger </option>
-                                    <option className="options" value="8"> 8 Passenger </option>
-                                    <option className="options" value="9"> 9 Passenger </option>
-                                </select>
-                            </div>
-                            <div>
-                                <button onClick={sendInfo}>Submit</button>
+                            <div class='info-arching-container2'>
+                                <div id="container5">
+                                    <h1>Number of Passengers</h1>
+                                    <select onChange={(e) => setNumPassengers(e.target.value)}>
+                                        <option className="options" value="select-option"> --Select Number of Passengers--</option>
+                                        <option className="options" value="1"> 1 Passenger </option>
+                                        <option className="options" value="2"> 2 Passenger </option>
+                                        <option className="options" value="3"> 3 Passenger </option>
+                                        <option className="options" value="4"> 4 Passenger </option>
+                                        <option className="options" value="5"> 5 Passenger </option>
+                                        <option className="options" value="6"> 6 Passenger </option>
+                                        <option className="options" value="7"> 7 Passenger </option>
+                                        <option className="options" value="8"> 8 Passenger </option>
+                                        <option className="options" value="9"> 9 Passenger </option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <button className='next-button' onClick={sendInfo}>Submit</button>
+                                </div>
                             </div>
                         </>
                     }
