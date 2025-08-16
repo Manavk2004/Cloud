@@ -2,6 +2,7 @@ import "./findflights.css"
 import DatePicker from "react-datepicker"
 import { useState, useEffect } from "react"
 import arrow from "../assets/arrow.png"
+import "react-datepicker/dist/react-datepicker.css"
 
 export function FindFlight(){
 
@@ -14,6 +15,7 @@ export function FindFlight(){
     const [ numPassengers, setNumPassengers] = useState(null)
     const [ deltaPrices, setDeltaPrices ] = useState(null)
     const [ page, setPage ] = useState(0)
+    const [ selectedDate, setSelectedDate ] = useState(null)
 
 
     const monthDict = {
@@ -98,11 +100,15 @@ export function FindFlight(){
         console.log(deltaPrices)
     }, [deltaPrices])
 
-
+    
 
 
     function changePage(){
         setPage((prev) => (prev) + 1)
+    }
+
+    const handleDateChange = (date) => {
+        setSelectedDate(date)
     }
 
     return(
@@ -161,13 +167,30 @@ export function FindFlight(){
                         </div>
                     : page === 2 ?
                         <>
-                            <div id='container4'>
-                                <h1>Departure Date</h1>
-                                <input onChange={(e) => setDepartureDate(e.target.value)} type='date'></input>
-                            </div>
-                            <div id='container6'>
-                                <h1>Return Date</h1>
-                                <input type='date' onChange={(e) => setLastDay(e.target.value)}></input>
+                            <div class='info-arching-container2'>
+                                <div id="dates-info-container">
+                                    <div id='container4'>
+                                        <h1 class="dateslabel">Departure Date</h1>
+                                        <DatePicker
+                                            selected={selectedDate}
+                                            onChange={handleDateChange}
+                                            dateFormat="MM/dd/yyyy"
+                                            shouldCloseOnSelect={false}
+                                        />
+                                    </div>
+                                    <div id='container6'>
+                                        <h1 class='dateslabel'>Return Date</h1>
+                                        <DatePicker
+                                            selected={selectedDate}
+                                            onChange={handleDateChange}
+                                            dateFormat="MM/dd/yyyy"
+                                            shouldCloseOnSelect={false}
+                                        />
+                                    </div>
+                                </div>
+                                <div>
+                                    <button onClick={changePage} class="next-button">Next</button>
+                                </div>
                             </div>
                         </>
                     : 
