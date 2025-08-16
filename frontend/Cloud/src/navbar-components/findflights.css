@@ -184,6 +184,7 @@ select{
 
 #container5 > select{
     margin-top: 30px;
+    text-align: center;
 }
 
 .button-container{
