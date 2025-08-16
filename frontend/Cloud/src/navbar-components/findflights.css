@@ -22,6 +22,32 @@ html, body, #root{
     background-position: center;
 }
 
+#left-arrow{
+    grid-row:  4 / 5;
+    grid-column: 4 / 5;
+    display: flex;
+    justify-content: center;
+    align-items: center;;
+}
+
+#right-arrow{
+    grid-row: 4 / 5;
+    grid-column: 9 / 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#right-arrow > img{
+    width: 400px;
+    cursor: pointer;
+}
+
+#left-arrow > img{
+    width: 400px;
+    cursor: pointer;
+}
+
 .react-datepicker-popper * {
     font-size: 2rem
 }
@@ -186,6 +212,11 @@ select{
     margin-top: 30px;
     text-align: center;
 }
+
+.main-container{
+    position: relative
+}
+
 
 .button-container{
     justify-self: flex-end;

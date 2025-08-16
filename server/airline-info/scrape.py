@@ -194,7 +194,7 @@ def searchFlights():
             'time-info': time_dict
         }
         print(json.dumps(combined_data))  # This sends clean JSON back to Node.js
-        page.pause()
+        # page.pause()
         return flight_dict
     
 

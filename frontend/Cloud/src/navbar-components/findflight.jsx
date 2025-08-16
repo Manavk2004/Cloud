@@ -1,22 +1,25 @@
 import "./findflights.css"
 import DatePicker from "react-datepicker"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useNavigate } from "react-router-dom"
 import arrow from "../assets/arrow.png"
+import rightarrow from "../assets/right-arrow.png"
+import leftarrow from "../assets/leftarrow.png"
 import "react-datepicker/dist/react-datepicker.css"
 
 export function FindFlight(){
 
     const navigate = useNavigate()
-    const [ startDate, setStartDate ] = useState(null)
-    const [ origin, setOrigin ] = useState(null)
-    const [ destination, setDestination ] = useState(null)
-    const [ tripType, setTripType ] = useState(null)
-    const [ departureDate, setDepartureDate ] = useState(null)
-    const [ lastDay, setLastDay ] = useState(null)
-    const [ numPassengers, setNumPassengers] = useState(null)
     const [ deltaPrices, setDeltaPrices ] = useState(null)
     const [ page, setPage ] = useState(0)
+
+
+    const originRef = useRef(null)
+    const destinationRef = useRef(null)
+    const tripTypeRef = useRef(null)
+    const deparetureDateRef = useRef(null)
+    const lastDayRef = useRef(null)
+    const numPassengersRef = useRef(null)
 
 
 
@@ -52,16 +55,14 @@ export function FindFlight(){
 
 
     function sendInfo(){
-        console.log(typeof departureDate)
-        console.log(typeof lastDay)
-        let departureDateString = departureDate.toString()
+        let departureDateString = deparetureDateRef.current.toString()
         console.log(typeof departureDateString)
         const date = departureDateString.split(" ")
         console.log(date)
         const day = date[2]
         const month = monthDict[date[1]]
         const year = date[3]
-        let returnDateString = lastDay.toString()
+        let returnDateString = lastDayRef.current.toString()
         const arrDate = returnDateString.split(" ")
         const arrday = arrDate[2]
         const arrmonth = monthDict[arrDate[1]]
@@ -73,12 +74,12 @@ export function FindFlight(){
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                origin: origin.toUpperCase(),
-                destination: destination.toUpperCase(),
-                trip_type: tripType,
+                origin: originRef.current.toUpperCase(),
+                destination: destinationRef.current.toUpperCase(),
+                trip_type: tripTypeRef.current,
                 departure_date: [month, day, year],
                 coming_back_date: [arrmonth, arrday, arryear],
-                num_passengers: numPassengers
+                num_passengers: numPassengersRef.current
             })
         })
             .then(res => res.json())
@@ -87,61 +88,22 @@ export function FindFlight(){
         
     }
 
-    useEffect(() =>{
-        console.log(origin)
-    }, [origin])
-
-    useEffect(() =>{
-        console.log(destination)
-    }, [destination])
-
-    useEffect(() =>{
-        console.log(tripType)
-    }, [tripType])
-
-    
-    useEffect(() =>{
-        console.log(lastDay)
-    }, [lastDay])
-    
-    useEffect(() =>{
-        console.log(numPassengers)
-    }, [numPassengers])
-    
-    useEffect(() =>{
-        console.log(deltaPrices)
-    }, [deltaPrices])
-    
-    useEffect(() =>{
-        console.log(departureDate)
-    }, [departureDate])
-    
-    useEffect(() =>{
-        if (departureDate !== null){
-            const toDateString = departureDate.toDateString()
-            const date = toDateString.split(" ")
-            const month = date[1]
-            const day = date[2]
-            const year = date[3]
-        }
-
-    }, [departureDate])
-
-    useEffect(() =>{
-        console.log(lastDay)
-    }, [lastDay])
 
 
     function changePage(){
         setPage((prev) => (prev) + 1)
     }
 
+    function backPage(){
+        setPage((prev) => (prev) - 1)
+    }
+
     const handleDepartureDate = (date) => {
-        setDepartureDate(date)
+        deparetureDateRef.current = date
     }
 
     const handleReturndate = (date) => {
-        setLastDay(date)
+        lastDayRef.current = date
     }
 
     function changeWindow(){
@@ -151,6 +113,13 @@ export function FindFlight(){
     return(
         <>
             <div id="main-div">
+                <div id="left-arrow">
+                    <img onClick={backPage} src={leftarrow} />
+                </div>
+                <div id="right-arrow">
+                    <img onClick={changePage} src={rightarrow} />
+                </div>
+
                 <nav id="navbar">
                 <div id="navbar-div">
                     <div id='div1-delta'>
@@ -164,14 +133,14 @@ export function FindFlight(){
                     </div>
                 </div>
                 </nav>
-                <div id={page===0 ? "overarching-container1" : page === 1 ? "overarching-container2" : "overarching-container3"} >
+                <div class="main-container" id={page===0 ? "overarching-container1" : page === 1 ? "overarching-container2" : "overarching-container3"} >
                     {page === 0 ? 
                         <>
                             <div class="info-arching-container1">
                                 <div id="container1">
                                     <h1>From</h1>
                                     <h3>What is your origin?</h3>
-                                    <input onChange={(e) => setOrigin(e.target.value)} type='text' placeholder="ATL" maxLength={3}></input>
+                                    <input onChange={(e) => originRef.current = e.target.value} type='text' placeholder="ATL" maxLength={3} value={originRef.current}></input>
                                 </div>
                                 <div>
                                     <img id="arrow-img" src={arrow} />
@@ -179,7 +148,7 @@ export function FindFlight(){
                                 <div id="container2">
                                     <h1>To</h1>
                                     <h3>What is your destination?</h3>
-                                    <input onChange={(e) => setDestination(e.target.value)} type='text' placeholder="MIA" maxLength={3}></input>
+                                    <input value={destinationRef.current} onChange={(e) => destinationRef.current = e.target.value} type='text' placeholder="MIA" maxLength={3}></input>
                                 </div>
                             </div>
                             <div class='button-container'>
@@ -191,7 +160,7 @@ export function FindFlight(){
                         <div class='info-arching-container2'>
                             <div id="container3">
                                 <h1>Type of Trip</h1>
-                                <select id="typetrip-select" onChange={(e) => setTripType(e.target.value)}>
+                                <select id="typetrip-select" onChange={(e) => tripTypeRef.current = e.target.value} value={tripTypeRef.current}>
                                     <option value="">--Select Trip Type--</option>
                                     <option value="One Way">One Way</option>
                                     <option value="Round Trip">Round Trip</option>
@@ -209,7 +178,7 @@ export function FindFlight(){
                                     <div id='container4'>
                                         <h1 class="dateslabel">Departure Date</h1>
                                         <DatePicker
-                                            selected={departureDate}
+                                            selected={deparetureDateRef.current}
                                             onChange={handleDepartureDate}
                                             dateFormat="MM/dd/yyyy"
                                             shouldCloseOnSelect={false}
@@ -218,7 +187,7 @@ export function FindFlight(){
                                     <div id='container6'>
                                         <h1 class='dateslabel'>Return Date</h1>
                                         <DatePicker
-                                            selected={lastDay}
+                                            selected={lastDayRef.current}
                                             onChange={handleReturndate}
                                             dateFormat="MM/dd/yyyy"
                                             shouldCloseOnSelect={false}
@@ -235,17 +204,17 @@ export function FindFlight(){
                             <div class='info-arching-container2'>
                                 <div id="container5">
                                     <h1>Number of Passengers</h1>
-                                    <select onChange={(e) => setNumPassengers(e.target.value)}>
+                                    <select value={numPassengersRef.current} onChange={(e) => numPassengersRef.current = e.target.value}>
                                         <option className="options" value="select-option"> --Select Number of Passengers--</option>
                                         <option className="options" value="1"> 1 Passenger </option>
-                                        <option className="options" value="2"> 2 Passenger </option>
-                                        <option className="options" value="3"> 3 Passenger </option>
-                                        <option className="options" value="4"> 4 Passenger </option>
-                                        <option className="options" value="5"> 5 Passenger </option>
-                                        <option className="options" value="6"> 6 Passenger </option>
-                                        <option className="options" value="7"> 7 Passenger </option>
-                                        <option className="options" value="8"> 8 Passenger </option>
-                                        <option className="options" value="9"> 9 Passenger </option>
+                                        <option className="options" value="2"> 2 Passengers </option>
+                                        <option className="options" value="3"> 3 Passengers </option>
+                                        <option className="options" value="4"> 4 Passengers </option>
+                                        <option className="options" value="5"> 5 Passengers </option>
+                                        <option className="options" value="6"> 6 Passengers </option>
+                                        <option className="options" value="7"> 7 Passengers </option>
+                                        <option className="options" value="8"> 8 Passengers </option>
+                                        <option className="options" value="9"> 9 Passengers </option>
                                     </select>
                                 </div>
                                 <div>
