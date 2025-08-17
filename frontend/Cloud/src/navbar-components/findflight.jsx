@@ -11,6 +11,7 @@ export function FindFlight(props){
     const navigate = useNavigate()
     const [ deltaPrices, setDeltaPrices ] = useState(null)
     const [ page, setPage ] = useState(0)
+    const [ showFlights, setShowFlights ] = useState(false)
 
 
     const originRef = useRef(null)
@@ -114,7 +115,14 @@ export function FindFlight(props){
         navigate("/home")
     }
 
+    useEffect(() => {
+        if(deltaPrices !== null){
+            navigate("/flightresults")
+        }
+    }, [deltaPrices])
+
     return(
+        (!showFlights &&
         <>
             <div id="main-div">
                 <div id="left-arrow">
@@ -230,6 +238,8 @@ export function FindFlight(props){
                     
                 </div>
             </div>
+            )
         </>
+        )
     )
 }

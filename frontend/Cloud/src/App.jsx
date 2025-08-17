@@ -4,6 +4,7 @@ import { DeltaPage } from "./homepage-components/deltaHomePage.jsx"
 import { UnitedPage } from "./homepage-components/unitedHomePage.jsx"
 import { SouthWestPage } from "./homepage-components/southWestPage.jsx"
 import { FindFlight } from "./navbar-components/findflight.jsx"
+import { FlightResults } from "./navbar-components/flightresults.jsx"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import { AnimatePresence, motion } from "framer-motion"
 
@@ -85,6 +86,7 @@ function App() {
               currentPage === 1 ? <UnitedPage props={isAnimated}/> :
               <SouthWestPage props={isAnimated}/>
             } />
+            <Route path="/flightresults" element={<FlightResults />} />
           </Routes>
         )}
     </BrowserRouter>
