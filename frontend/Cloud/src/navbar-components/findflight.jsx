@@ -1,13 +1,12 @@
 import "./findflights.css"
 import DatePicker from "react-datepicker"
 import { useState, useEffect, useRef } from "react"
-import { useNavigate } from "react-router-dom"
+import { Routes, Route, useNavigate, Link } from "react-router-dom"
 import arrow from "../assets/arrow.png"
 import rightarrow from "../assets/right-arrow.png"
 import leftarrow from "../assets/leftarrow.png"
 import "react-datepicker/dist/react-datepicker.css"
-
-export function FindFlight(){
+export function FindFlight(props){
 
     const navigate = useNavigate()
     const [ deltaPrices, setDeltaPrices ] = useState(null)
@@ -110,6 +109,11 @@ export function FindFlight(){
         navigate("/findflight")
     }
 
+    function backToHome(){
+        props.setIsAnimated(true)
+        navigate("/home")
+    }
+
     return(
         <>
             <div id="main-div">
@@ -123,7 +127,7 @@ export function FindFlight(){
                 <nav id="navbar">
                 <div id="navbar-div">
                     <div id='div1-delta'>
-                    <li>Home</li>
+                    <li onClick={() => backToHome()}>Home</li>
                     </div>
                     <div id='div2-delta'>
                     <li>My Tickets</li>

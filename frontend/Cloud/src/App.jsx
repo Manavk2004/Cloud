@@ -79,7 +79,12 @@ function App() {
           </>
         ) : (
           <Routes>
-            <Route path="/findflight" element={<FindFlight/>}/>
+            <Route path="/findflight" element={<FindFlight setIsAnimated={setIsAnimated}/>}/>
+            <Route path="/home" element={
+              currentPage === 0 ? <DeltaPage props={isAnimated}/> : 
+              currentPage === 1 ? <UnitedPage props={isAnimated}/> :
+              <SouthWestPage props={isAnimated}/>
+            } />
           </Routes>
         )}
     </BrowserRouter>
