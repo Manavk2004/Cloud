@@ -171,16 +171,30 @@ def searchFlights():
         # print(len(options))  # Remove this debug print
         def price_info(index):
             flight_grid = page.locator(f"div#flight-results-grid-{index}")
-            time_container = flight_grid.locator('.flight-schedule__operation-time')  # Added dot for class
+            time_container = flight_grid.locator('.flight-schedule__operation-time')
             both_times = time_container.all_inner_texts()
             time_dict[index] = both_times
-            prices = flight_grid.locator('span.mach-revenue-price__whole.ng-star-inserted')
-            all_prices = prices.all_inner_texts()
-            ordered_prices = []
-            for i in all_prices:
-                if i not in ordered_prices:
-                    ordered_prices.append(i)
-            return ordered_prices
+            
+            # Wait for prices to load and get them from the specific flight
+            page.wait_for_timeout(1000)
+            flight_prices = flight_grid.locator("span.mach-revenue-price__whole.ng-star-inserted")
+            
+            if flight_prices.count() >= 3:
+                main_cabin = flight_prices.nth(0).text_content()
+                comfort_cabin = flight_prices.nth(1).text_content()
+                first_cabin = flight_prices.nth(2).text_content()
+            else:
+                main_cabin = "N/A"
+                comfort_cabin = "N/A"
+                first_cabin = "N/A"
+
+            cabin_prices = {
+                "main_cabin": main_cabin,
+                "comfort_cabin": comfort_cabin,
+                "first_class": first_cabin
+            }
+
+            return cabin_prices
         
         for i in range(len(options)):
             prices = price_info(i)
